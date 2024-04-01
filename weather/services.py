@@ -78,4 +78,4 @@ def get_google_sheet():
         print(err)
 
 
-get_google_sheet()
+# get_google_sheet()
