@@ -3,6 +3,9 @@ import requests
 import json
 import pandas as pd
 import dotenv 
+from geopy import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
+from functools import partial
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -13,11 +16,9 @@ dotenv.load_dotenv()
 
 OPEN_WEATHER_KEY = os.getenv('OPEN_WEATHER_KEY')
 
-def get_lat_lon(city_name, state_code, country_code): 
-    r = requests.get(f'http://api.openweathermap.org/geo/1.0/direct?q={city_name},{state_code},{country_code}&appid={OPEN_WEATHER_KEY}').json()
-    data = r[0]
-    lat, lon = data['lat'], data['lon']
-    return lat, lon
+geolocator = Nominatim(user_agent="weather_app")
+geocode = partial(geolocator.geocode, language="es")
+
 
 def get_current_weather(lat, lon): 
     r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
@@ -74,14 +75,18 @@ def get_google_sheet():
 
         data = []
         for row in values:
-            data.append(row)
-        df = pd.DataFrame(data, columns = data[0])
-        return df
+            data.append(row[0] + ", " + row[1])
+        # data[1:] skips the Google Sheet's column names
+        return pd.DataFrame({'location': data[1:]})
     except HttpError as err:
         print(err)
 
 
-
-# data_list = get_google_sheet()
-# print(data_list)
-# print(len(data_list))
+def get_lat_lon(df):
+    from tqdm import tqdm 
+    tqdm.pandas()
+    # OpenWeather has their own Geolocator but they limit me to 60 API calls a minute and 1,000 a day :( 
+    geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+    df['geo_location'] = df['location'].apply(geocode).progress_apply(geocode)
+    df['coordinates'] = df['geo_location'].apply(lambda loc: tuple(loc.point) if loc else None)
+    return df
