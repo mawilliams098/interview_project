@@ -1,3 +1,7 @@
 body {
-    background-color: lightblue;
+    padding: 200px;
+}
+
+button {
+    margin: 10px;
 }
