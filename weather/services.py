@@ -72,10 +72,16 @@ def get_google_sheet():
             print("No data found.")
             return
 
+        data = []
         for row in values:
-            print(f"{row[0]}, {row[1]}")
+            data.append(row)
+        df = pd.DataFrame(data, columns = data[0])
+        return df
     except HttpError as err:
         print(err)
 
 
-# get_google_sheet()
+
+# data_list = get_google_sheet()
+# print(data_list)
+# print(len(data_list))
