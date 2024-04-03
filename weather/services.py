@@ -1,30 +1,11 @@
 import os
+import dotenv
+import time
 import gspread
 import requests
 import pandas as pd
 from typing import List
 from django.conf import settings
-from geopy import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
-from functools import partial
-
-
-def get_lat_lon(df):
-    from tqdm import tqdm 
-    tqdm.pandas()
-    # OpenWeather has their own Geolocator but they limit me to 60 API calls a minute and 1,000 a day :( 
-    geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
-    df['geolocation'] = df['location'].progress_apply(geocode)
-    df['geo_location'] = df['location'].apply(geocode)
-    df['coordinates'] = df['geo_location'].apply(lambda loc: tuple(loc.point) if loc else None)
-    return df
-
-
-def get_current_weather(lat, lon): 
-    # r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={"Charlottesville"},{"Virginia"}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
-    r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
-    return r
-
 
 def initialize_gspread(): 
     return gspread.oauth_from_dict(get_credentials(), get_authorization())
@@ -54,7 +35,20 @@ def get_authorization():
          "expiry": os.getenv("EXPIRY")
     }
 
-def get_all_rows(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"): 
+def get_google_sheet(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"): 
     gc, authorized_user = initialize_gspread()
     sh = gc.open_by_key(doc_id)
-    return sh.sheet1.get_all_values()
+    """
+    SHORTENING THIS TO THE HEAD FOR TESTING!
+    """
+    return sh.sheet1.get_all_values()[1:10]
+
+def get_city_weather(cities): 
+    OPEN_WEATHER_KEY = os.getenv("OPEN_WEATHER_KEY")
+    city_weather = {}
+    for city in cities: 
+        # cities is a list of lists where city[0] = city, city[1] = state
+        r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city[0]},{city[1]}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
+        city_weather[tuple(city)] = r
+        time.sleep(1)
+    return city_weather
