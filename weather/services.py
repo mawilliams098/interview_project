@@ -1,85 +1,12 @@
 import os
+import gspread
 import requests
-import json
 import pandas as pd
-import dotenv 
+from typing import List
+from django.conf import settings
 from geopy import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
 from functools import partial
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-
-dotenv.load_dotenv()
-
-OPEN_WEATHER_KEY = os.getenv('OPEN_WEATHER_KEY')
-
-geolocator = Nominatim(user_agent="weather_app")
-geocode = partial(geolocator.geocode, language="es")
-
-
-def get_current_weather(lat, lon): 
-    r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
-    return r
-
-def get_google_sheet(): 
-    # This function is based off of the Google Workspace python quickstart guide: 
-    # https://developers.google.com/sheets/api/quickstart/python#configure_the_sample
-    
-    # If modifying these scopes, delete the file token.json.
-    SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-
-    # The ID and range of a sample spreadsheet.
-    SAMPLE_SPREADSHEET_ID = "1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"
-    SAMPLE_RANGE_NAME = "Cities"
-
-    """Shows basic usage of the Sheets API.
-    Prints values from a sample spreadsheet.
-    """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
-            )
-            creds = flow.run_local_server(port=8000)
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-
-    try:
-        service = build("sheets", "v4", credentials=creds)
-
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-        result = (
-            sheet.values()
-            .get(spreadsheetId=SAMPLE_SPREADSHEET_ID, range=SAMPLE_RANGE_NAME)
-            .execute()
-        )
-        values = result.get("values", [])
-
-        if not values:
-            print("No data found.")
-            return
-
-        data = []
-        for row in values:
-            data.append(row[0] + ", " + row[1])
-        # data[1:] skips the Google Sheet's column names
-        return pd.DataFrame({'location': data[1:]})
-    except HttpError as err:
-        print(err)
 
 
 def get_lat_lon(df):
@@ -87,6 +14,47 @@ def get_lat_lon(df):
     tqdm.pandas()
     # OpenWeather has their own Geolocator but they limit me to 60 API calls a minute and 1,000 a day :( 
     geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
-    df['geo_location'] = df['location'].apply(geocode).progress_apply(geocode)
+    df['geolocation'] = df['location'].progress_apply(geocode)
+    df['geo_location'] = df['location'].apply(geocode)
     df['coordinates'] = df['geo_location'].apply(lambda loc: tuple(loc.point) if loc else None)
     return df
+
+
+def get_current_weather(lat, lon): 
+    # r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={"Charlottesville"},{"Virginia"}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
+    r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
+    return r
+
+
+def initialize_gspread(): 
+    return gspread.oauth_from_dict(get_credentials(), get_authorization())
+
+def get_credentials(): 
+    return {
+        "installed": {
+            "client_id":os.getenv("CLIENT_ID"), 
+            "project_id":os.getenv("PROJECT_ID"), 
+            "auth_uri":os.getenv("AUTH_URI"),
+            "token_uri":os.getenv("TOKEN_URI"),
+            "auth_provider_x509_cert_url":os.getenv("AUTH_PROVIDER"), 
+            "client_secret":os.getenv("CLIENT_SECRET"),
+            "redirect_uris": os.getenv("REDIRECT_URIS"),
+        }
+    }
+
+def get_authorization(): 
+    return {
+        "refresh_token": os.getenv("REFRESH_TOKEN"), 
+         "token_uri": os.getenv("TOKEN_URI"), 
+         "client_id": os.getenv("CLIENT_ID"), 
+         "client_secret": os.getenv("CLIENT_SECRET"), 
+         "scopes": os.getenv("SCOPES"), 
+         "universe_domain": os.getenv("UNIVERSE_DOMAIN"), 
+         "account": os.getenv("ACCOUNT"), 
+         "expiry": os.getenv("EXPIRY")
+    }
+
+def get_all_rows(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"): 
+    gc, authorized_user = initialize_gspread()
+    sh = gc.open_by_key(doc_id)
+    return sh.sheet1.get_all_values()
