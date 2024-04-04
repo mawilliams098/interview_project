@@ -1,11 +1,11 @@
 import os
-import dotenv
 import time
 import gspread
 import requests
 import pandas as pd
 from typing import List
 from django.conf import settings
+#from celery import task
 
 def initialize_gspread(): 
     return gspread.oauth_from_dict(get_credentials(), get_authorization())
@@ -41,15 +41,6 @@ def get_google_sheet(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"):
     """
     SHORTENING THIS TO THE HEAD FOR TESTING!
     """
-    return sh.sheet1.get_all_values()[1:4]
+    return sh.sheet1.get_all_values()[1:12]
 
-def get_city_weather(cities): 
-    OPEN_WEATHER_KEY = os.getenv("OPEN_WEATHER_KEY")
-    city_weather = {}
-    for city in cities: 
-        # cities is a list of lists where city[0] = city, city[1] = state
-        key = city[0] + ", " + city[1]
-        r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city[0]},{city[1]}&appid={OPEN_WEATHER_KEY}&units=imperial').json()
-        city_weather[key] = r
-        time.sleep(1)
-    return city_weather
+
