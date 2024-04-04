@@ -41,6 +41,32 @@ def get_google_sheet(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"):
     """
     SHORTENING THIS TO THE HEAD FOR TESTING!
     """
-    return sh.sheet1.get_all_values()[1:12]
+    return sh.sheet1.get_all_values()[1:5]
 
+def convert_weather_code(weather_code): 
+    if 200 <= weather_code <= 232: 
+        return "thunderstorm"
+    if 300 <= weather_code <= 321:
+        return "drizzle"
+    if 500 <= weather_code <= 531:
+        return "rain"
+    if 600 <= weather_code <= 622:
+        return "snow"
+    if 701 <= weather_code <= 781:
+        return "atmosphere"
+    if weather_code == 800:
+        return "clear"
+    if 801 <= weather_code <= 804:
+        return "clouds"
+    
+    return None
+    
 
+def filter_results(weather_data, forecast):
+    res = {}
+    # Grab all cities experiencing the user-selected forecast
+    for city in weather_data: 
+        if convert_weather_code(weather_data[city]['weather'][0]['id']) == forecast: 
+            print("Match")
+            res[city] = weather_data[city]
+    return res
