@@ -39,7 +39,7 @@ def get_google_sheet(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"):
     gc, authorized_user = initialize_gspread()
     sh = gc.open_by_key(doc_id)
     # The first row is [City, State] so skip that
-    return sh.sheet1.get_all_values()[1:20]
+    return sh.sheet1.get_all_values()[1:100]
 
 def convert_weather_code(weather_code): 
     if 200 <= weather_code <= 232: 

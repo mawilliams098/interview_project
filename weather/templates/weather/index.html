@@ -30,20 +30,20 @@
             </select>
             <button type="submit" class="btn btn-primary">Submit</button>
                 {% if not forecast %}
-                <h3> Please choose an option from the dropdown window </h3>
-                {% elif forecast and weather %}
-                <h3>The following cities are currently experiencing {{ forecast }}:</h3>
-                {% for key, value in weather.items %}
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="city-name">{{ key }}</div>
-                            Temperature: {{ value.temp }} degrees Fahrenheit <br>
-                            Wind Speed: {{ value.wind }} mph
+                    <h3> Please choose an option from the dropdown window </h3>
+                {% elif forecast and filtered_weather %}
+                    <h3>The following cities are currently experiencing {{ forecast }}:</h3>
+                    {% for key, value in filtered_weather.items %}
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="city-name">{{ key }}</div>
+                                Temperature: {{ value.temp }} degrees Fahrenheit <br>
+                                Wind Speed: {{ value.wind }} mph
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-                {% elif forecast and not weather.items %}
-                <h3>No cities are currently experiencing {{ forecast }}</h3>
+                    {% endfor %}
+                {% elif forecast and not filtered_weather.items %}
+                    <h3>No cities are currently experiencing {{ forecast }}</h3>
                 {% endif %}
         </form>
     </div>
@@ -57,7 +57,7 @@
 </body>
 <script>
     function customSuccess(progressBarElement, progressBarMessageElement) {
-        progressBarMessageElement.innerHTML = "Data is ready!"
+        progressBarMessageElement.innerHTML = "All data is available!"
     }
     document.addEventListener("DOMContentLoaded", function () {
         var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
