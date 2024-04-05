@@ -36,7 +36,7 @@ Open up a new terminal and start redis with:
 
 This terminal will stay the dedicated window for Redis and will need to be left open while running the app. 
 
-Next, open up a new terminal and navigate to the root of this interview project folder `../interview_project` and start the celery worker by running 
+Next, open up a new terminal and navigate to the root of this interview project folder `/interview_project` and start the celery worker by running 
  
 `$ python -m celery -A interview_project worker -l info`
 
