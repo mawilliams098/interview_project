@@ -5,7 +5,7 @@ import requests
 import pandas as pd
 from typing import List
 from django.conf import settings
-#from celery import task
+
 
 def initialize_gspread(): 
     return gspread.oauth_from_dict(get_credentials(), get_authorization())
@@ -39,7 +39,7 @@ def get_google_sheet(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"):
     gc, authorized_user = initialize_gspread()
     sh = gc.open_by_key(doc_id)
     # The first row is [City, State] so skip that
-    return sh.sheet1.get_all_values()[1:5]
+    return sh.sheet1.get_all_values()[1:]
 
 def convert_weather_code(weather_code): 
     if 200 <= weather_code <= 232: 
