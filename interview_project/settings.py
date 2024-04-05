@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'celery_progress',
     'weather.apps.WeatherConfig',
     'django.contrib.admin',
     'django.contrib.auth',
