@@ -8,7 +8,7 @@ This app uses a Python Celery task to asynchronously call the OpenWeather API wh
 
 ### Download .env 
 
-I've emailed Deborah a `.env` file containing all of my API keys, please download this and put it into the main project folder `interview_project/interview_project`
+I've emailed Deborah a `keys` file containing all of my API keys, please download this and put it into the main project folder `interview_project/interview_project` and rename it as `.env`
 
 ### Start & activate virtualenv 
 
