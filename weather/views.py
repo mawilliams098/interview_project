@@ -4,7 +4,7 @@ from . import services
 from weather.tasks import get_city_weather_task
 from django.http import HttpResponse, JsonResponse
 
-# cache.clear()
+cache.clear()
 
 def index(request):
     

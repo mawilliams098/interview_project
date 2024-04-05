@@ -1,3 +1,19 @@
+body {
+    margin-top: 50px;
+}
+
 button {
+    margin: 10px 0px;
+}
+
+form {
+    margin: 30px 0px;
+}
+
+.card {
     margin: 10px;
+}
+
+.city-name {
+    font-weight: bold;
 }
