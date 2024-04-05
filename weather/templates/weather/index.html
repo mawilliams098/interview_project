@@ -10,14 +10,22 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Weather App</h2>
-        <p>OpenWeather only allows one API call per second, so loading data for the first time may take around 4 minutes. </p>
-        <div id="progress-bar-message">Waiting for progress to start...</div>
-        <div class='progress-wrapper'>
-            <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-        </div>
+
+    <nav class = "navbar navbar-light">
+        <a class="navbar-brand">Weather App</a>
+    </nav>
+
+    <div id="body">
+
         <form action="" method="get">
+            <div class="alert alert-warning" role="alert">
+                OpenWeather only allows one API call per second, so loading data for the first time may take around 4 minutes.
+                In the meantime you can start to query on the available data, but it does not represent the full picture.
+            </div>
+            <div id="progress-bar-message">Waiting for progress to start...</div>
+            <div class='progress-wrapper'>
+                <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+            </div>
             <select class="form-control" name="forecast">
                 <option value = "" selected disabled hidden> Choose here</option>
                 <option value="thunderstorm">Thunderstorm</option>
@@ -29,24 +37,33 @@
                 <option value="clouds">Clouds</option>
             </select>
             <button type="submit" class="btn btn-primary">Submit</button>
-                {% if not forecast %}
-                    <h3> Please choose an option from the dropdown window </h3>
-                {% elif forecast and filtered_weather %}
-                    <h3>The following cities are currently experiencing {{ forecast }}:</h3>
-                    {% for key, value in filtered_weather.items %}
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="city-name">{{ key }}</div>
-                                Temperature: {{ value.temp }} degrees Fahrenheit <br>
-                                Wind Speed: {{ value.wind }} mph
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% elif forecast and not filtered_weather.items %}
-                    <h3>No cities are currently experiencing {{ forecast }}</h3>
-                {% endif %}
         </form>
+
+        {% if not forecast %}
+            <div class="alert alert-secondary">
+                Please choose an option from the dropdown window
+            </div>
+        {% elif forecast and filtered_weather %}
+            <div class="alert alert-primary">
+                The following cities are currently experiencing {{ forecast }}:
+            </div>
+            {% for key, value in filtered_weather.items %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="city-name">{{ key }}</div>
+                        Temperature: {{ value.temp }} degrees Fahrenheit <br>
+                        Wind Speed: {{ value.wind }} mph
+                    </div>
+                </div>
+            {% endfor %}
+        {% elif forecast and not filtered_weather.items %}
+                <div class="alert alert-secondary">
+                    No cities are currently experiencing {{ forecast }}
+                </div>
+        {% endif %}
+
     </div>
+
 
     <!-- Optional JavaScript for Bootstrap-->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

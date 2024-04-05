@@ -1,5 +1,5 @@
-body {
-    margin-top: 50px;
+.navbar {
+    background-color: #e3f2fd;
 }
 
 button {
@@ -7,7 +7,12 @@ button {
 }
 
 form {
-    margin: 30px 0px;
+    margin-bottom: 30px;
+
+}
+
+#body {
+    margin:50px;
 }
 
 .card {
@@ -16,4 +21,8 @@ form {
 
 .city-name {
     font-weight: bold;
+}
+
+.progress-wrapper {
+    margin-bottom: 30px;
 }

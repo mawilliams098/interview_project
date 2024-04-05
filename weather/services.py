@@ -39,7 +39,7 @@ def get_google_sheet(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"):
     gc, authorized_user = initialize_gspread()
     sh = gc.open_by_key(doc_id)
     # The first row is [City, State] so skip that
-    return sh.sheet1.get_all_values()[1:]
+    return sh.sheet1.get_all_values()[1:5]
 
 def convert_weather_code(weather_code): 
     if 200 <= weather_code <= 232: 
@@ -80,13 +80,3 @@ def filter_results(weather_data, forecast):
         res[city] = fields
 
     return res
-
-
-KEY = '4b36da1634e731e130af89bdad28e58b'
-
-city = "Vallejo"
-state = "California"
-
-r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city},{state}&appid={KEY}&units=imperial').json()
-
-print(r)
