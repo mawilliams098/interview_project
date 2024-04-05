@@ -38,10 +38,8 @@ def get_authorization():
 def get_google_sheet(doc_id="1_Rxr-2jkJgWmmO6xLJJ61SHEXeRCUVIgv6cXXnvz438"): 
     gc, authorized_user = initialize_gspread()
     sh = gc.open_by_key(doc_id)
-    """
-    SHORTENING THIS TO THE HEAD FOR TESTING!
-    """
-    return sh.sheet1.get_all_values()[1:5]
+    # The first row is [City, State] so skip that
+    return sh.sheet1.get_all_values()[1:50]
 
 def convert_weather_code(weather_code): 
     if 200 <= weather_code <= 232: 
@@ -67,11 +65,9 @@ def filter_results(weather_data, forecast):
     match = {}
     res = {}
 
-    # print(weather_data)
-
     # Grab all cities experiencing the user-selected forecast
     for city in weather_data: 
-        if convert_weather_code(weather_data[city]['weather'][0]['id']) == forecast: 
+        if weather_data[city] and convert_weather_code(weather_data[city]['weather'][0]['id']) == forecast: 
             match[city] = weather_data[city]
 
     # Reduce that down to just the fields we need 
@@ -83,5 +79,10 @@ def filter_results(weather_data, forecast):
         fields['weather-desc'] = match[city]['weather'][0]['description']
         res[city] = fields
 
-    print(res)
     return res
+
+# 'Nashville-Davidson, Tennessee'
+# KEY = ''
+
+# r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={"Nashville-Davidson"},{"Tennessee"}&appid={KEY}&units=imperial').json()
+# print(r)
