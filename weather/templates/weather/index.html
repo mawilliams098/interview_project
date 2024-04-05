@@ -29,7 +29,9 @@
                 <option value="clouds">Clouds</option>
             </select>
             <button type="submit" class="btn btn-primary">Submit</button>
-            {% if weather %}
+                {% if not forecast %}
+                <h3> Please choose an option from the dropdown window </h3>
+                {% elif forecast and weather %}
                 <h3>The following cities are currently experiencing {{ forecast }}:</h3>
                 {% for key, value in weather.items %}
                     <div class="card">
@@ -40,7 +42,9 @@
                         </div>
                     </div>
                 {% endfor %}
-            {% endif %}
+                {% elif forecast and not weather.items %}
+                <h3>No cities are currently experiencing {{ forecast }}</h3>
+                {% endif %}
         </form>
     </div>
 

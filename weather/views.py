@@ -17,6 +17,20 @@ def index(request):
         context = {}
         context['weather'] = services.filter_results(cached_data, forecast)
         context['task_id'] = cache.get('task_id')
+
+    # The user submitted the form without selecting an option from the dropdown menu
+    elif cached_data and not forecast:
+            context = {}
+            context['weather'] = cached_data
+            context['task_id'] = cache.get('task_id')
+            return render(request, 'weather/index.html', context)
+    
+    # The user submitted a blank form while the data was still coming in 
+    elif cache.get('task_id') and not forecast and not cached_data:
+        context = {}
+        context['task_id'] = cache.get('task_id')
+        return render(request, 'weather/index.html', context)
+
     else: 
         # Celery fetches weather data asynchronously
         result = get_city_weather_task.delay(cities)
@@ -27,6 +41,7 @@ def index(request):
     if forecast: 
         context['forecast'] = forecast.lower()
     
+    print(forecast)
     print(context)
     
     return render(request, 'weather/index.html', context)
