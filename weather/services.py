@@ -85,10 +85,3 @@ def filter_results(weather_data, forecast):
 
     print(res)
     return res
-
-
-KEY = '4b36da1634e731e130af89bdad28e58b'
-
-
-r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={"New York"},{"New York"}&appid={KEY}&units=imperial').json()
-print(r)
