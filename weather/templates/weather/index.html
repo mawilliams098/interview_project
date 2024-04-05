@@ -28,7 +28,11 @@
                 <option value="clouds">Clouds</option>
             </select>
             <button type="submit" class="btn btn-primary">Submit</button>
-
+            {% if weather %}
+                {% for city in weather %}
+                    <h1>{{ city }}</h1>
+                {% endfor %}
+            {% endif %}
         </form>
     </div>
 

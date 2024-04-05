@@ -67,11 +67,13 @@ def filter_results(weather_data, forecast):
     match = {}
     res = {}
 
+    # print(weather_data)
+
     # Grab all cities experiencing the user-selected forecast
     for city in weather_data: 
         if convert_weather_code(weather_data[city]['weather'][0]['id']) == forecast: 
-            res[city] = weather_data[city]
-            
+            match[city] = weather_data[city]
+
     # Reduce that down to just the fields we need 
     for city in match: 
         fields = {}
@@ -80,5 +82,6 @@ def filter_results(weather_data, forecast):
         fields['weather'] = match[city]['weather'][0]['main']
         fields['weather-desc'] = match[city]['weather'][0]['description']
         res[city] = fields
-    
+
+    print(res)
     return res
