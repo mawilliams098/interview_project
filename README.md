@@ -12,6 +12,8 @@ I've emailed Deborah a `keys` file containing all of my API keys, please downloa
 
 ### Start & activate venv virtual environment 
 
+In the directory of your choice: 
+
 Create virtualenv: `$ python -m venv weather-env`
 
 Activate virtualenv: `$ source weather-env/bin/activate`
