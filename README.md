@@ -12,7 +12,7 @@ I've emailed Deborah a `keys` file containing all of my API keys, please downloa
 
 ### Start & activate virtualenv 
 
-Create virtualenv: `$ python -m env weather-env`
+Create virtualenv: `$ python -m venv weather-env`
 
 Activate virtualenv: `$ source weather-env/bin/activate`
 
