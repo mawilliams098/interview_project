@@ -3,7 +3,7 @@ from django.core.cache import cache
 from . import services
 from weather.tasks import get_city_weather_task
 
-# cache.clear()
+cache.clear()
 
 def index(request):
     
@@ -28,10 +28,10 @@ def index(request):
         cities = services.get_google_sheet()
         result = get_city_weather_task.delay(cities)
         # Need to keep track of the task_id at all times for loading bar 
-        context['task_id'] = result.task_id
-        cache.set('task_id', result.task_id)
+        if not context['task_id']: 
+            context['task_id'] = result.task_id
+            cache.set('task_id', result.task_id)
 
-    print(context)
       
     return render(request, 'weather/index.html', context)
 
