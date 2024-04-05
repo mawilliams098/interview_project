@@ -12,6 +12,10 @@
 <body>
     <div class="container">
         <h3>Weather App</h3>
+        <div class='progress-wrapper'>
+            <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+        </div>
+          <div id="progress-bar-message">Waiting for progress to start...</div>
         <form action="" method="get">
             <select class="form-control" name="forecast">
                 <option value = "" selected disabled hidden> Choose here</option>
@@ -24,11 +28,8 @@
                 <option value="clouds">Clouds</option>
             </select>
             <button type="submit" class="btn btn-primary">Submit</button>
+
         </form>
-        <div class='progress-wrapper'>
-            <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
-          </div>
-          <div id="progress-bar-message">Waiting for progress to start...</div>
     </div>
 
     <!-- Optional JavaScript for Bootstrap-->
@@ -41,7 +42,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
-        // var taskUrl = progressUrl.replace('task-id-stub', response.text)
         CeleryProgressBar.initProgressBar(progressUrl);
     });
 </script>
