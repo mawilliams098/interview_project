@@ -6,7 +6,7 @@ This app uses a Python Celery task to asynchronously call the OpenWeather API wh
 
 ## Setup Instructions: 
 
-### Download .env 
+### Create .env from google doc keys 
 
 I've emailed Deborah a Google doc containing all of my API keys, please create a file called `.env` in `interview_project/interview_project` and paste these keys in. 
 
