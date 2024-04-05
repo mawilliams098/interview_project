@@ -3,7 +3,6 @@ from django.core.cache import cache
 from . import services
 from weather.tasks import get_city_weather_task
 
-cache.clear()
 
 def index(request):
     
