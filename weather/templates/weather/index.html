@@ -29,8 +29,16 @@
             </select>
             <button type="submit" class="btn btn-primary">Submit</button>
             {% if weather %}
-                {% for city in weather %}
-                    <h1>{{ city }}</h1>
+                <h3>The following cities are currently experiencing {{ forecast }}:</h3>
+                {% for key, value in weather.items %}
+                    <div class="card">
+                        <div class="card-body">
+                            {{ key }} <br>
+                            Temperature: {{ value.temp }} degrees Fahrenheit <br>
+                            Wind Speed: {{ value.wind }} 
+                        </div>
+                    </div>
+                    <h1></h1>
                 {% endfor %}
             {% endif %}
         </form>

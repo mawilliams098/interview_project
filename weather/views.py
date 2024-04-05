@@ -24,6 +24,9 @@ def index(request):
         # Need to save the task ID so that the loading bar can render each time
         cache.set('task_id', result.task_id)
     
+    if forecast: 
+        context['forecast'] = forecast.lower()
+    
     print(context)
     
     return render(request, 'weather/index.html', context)

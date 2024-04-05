@@ -77,7 +77,7 @@ def filter_results(weather_data, forecast):
     # Reduce that down to just the fields we need 
     for city in match: 
         fields = {}
-        fields['temp'] = match[city]['main']['temp']
+        fields['temp'] = str(match[city]['main']['temp'])
         fields['wind'] = match[city]['wind']['speed']
         fields['weather'] = match[city]['weather'][0]['main']
         fields['weather-desc'] = match[city]['weather'][0]['description']
@@ -85,3 +85,10 @@ def filter_results(weather_data, forecast):
 
     print(res)
     return res
+
+
+KEY = '4b36da1634e731e130af89bdad28e58b'
+
+
+r = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={"New York"},{"New York"}&appid={KEY}&units=imperial').json()
+print(r)
